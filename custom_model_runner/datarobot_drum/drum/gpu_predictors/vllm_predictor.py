@@ -105,7 +105,8 @@ class VllmPredictor(BaseOpenAiGpuPredictor):
             "--model",
             model_or_path,
             "--trust-remote-code",
-            f"--dtype {dtype}"
+            "--dtype",
+            dtype
 
         ]
 
