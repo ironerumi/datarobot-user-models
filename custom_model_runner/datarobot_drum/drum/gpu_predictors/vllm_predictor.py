@@ -7,6 +7,7 @@ Released under the terms of DataRobot Tool and Utility Agreement.
 import os
 import signal
 import subprocess
+import torch
 import typing
 from pathlib import Path
 
@@ -87,6 +88,10 @@ class VllmPredictor(BaseOpenAiGpuPredictor):
                 f" placed in the `{self.DEFAULT_MODEL_DIR}` directory."
             )
 
+        major_version, minor_version = torch.cuda.get_device_capability()
+        
+        dtype = "auto" if major_version >= 8 else "float16"
+
         cmd = [
             "python3",
             "-m",
@@ -99,6 +104,9 @@ class VllmPredictor(BaseOpenAiGpuPredictor):
             self.model_name,
             "--model",
             model_or_path,
+            "--trust-remote-code",
+            f"--dtype {dtype}"
+
         ]
 
         # update the path so vllm process can find its libraries
